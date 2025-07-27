@@ -1,0 +1,21 @@
+# Build directories.
+bin/
+bin-int/
+
+# Allow bin inside vendor.
+!vendor/bin/
+
+# VS settings.
+.vs/
+
+# C++ formatting files.
+.clang-format
+
+
+
+# VS project files.
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+~AutoRecover*
