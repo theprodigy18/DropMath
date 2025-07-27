@@ -2,7 +2,6 @@
 
 #include "../common.h"
 
-#define EPSILON 1e-6
 #define XY_LANE_MASK 0b0011
 
 typedef struct dm_vec2_float
@@ -22,7 +21,7 @@ inline float _vec2_x(const _vec2_float* v)
 }
 inline float _vec2_y(const _vec2_float* v)
 {
-    return _mm_cvtss_f32(_mm_shuffle_ps(v->data, v->data, _MM_SHUFFLE(1, 1, 1, 1)));
+    return _mm_cvtss_f32(_mm_shuffle_ps(v->data, v->data, _MM_SHUFFLE(0, 0, 0, 1)));
 }
 
 inline _vec2_float _vec2_set_x(const _vec2_float* v, float x)

@@ -14,5 +14,9 @@ int main()
 	bool eq = v1 == v2;
 	std::cout << eq << std::endl;
 
+	Vec3 v3 { 2.000003f, 2, 2};
+    Vec3 v4 { 2.000003f, 2, 2};
+	std::cout << Vec3::Dot(v3, v4) << std::endl;
+
     return 0;
 }
