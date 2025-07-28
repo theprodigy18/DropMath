@@ -57,10 +57,6 @@ project "Test"
 	{
 		"Lib/include"
 	}
-	links
-	{
-		"Lib"
-	}
 
 	filter "system:windows"
 		systemversion "latest"
