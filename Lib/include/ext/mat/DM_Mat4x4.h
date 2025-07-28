@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../DM_Enum.h"
 #include "../vec/DM_Vec4.h"
 
 namespace DropMath
@@ -14,6 +15,7 @@ namespace DropMath
         Vec4&       operator[](int i) { return rows[i]; }
         const Vec4& operator[](int i) const { return rows[i]; }
 
+        // Matrix × Vector.
         Vec4 operator*(const Vec4& v) const
         {
             return Vec4(
@@ -40,6 +42,7 @@ namespace DropMath
             return result;
         }
 
+        // Return Transposed matrix.
         Mat4x4 Transposed() const
         {
             // Transpose 4x4 matrix using SSE.
@@ -60,6 +63,7 @@ namespace DropMath
                 Vec4(_mm_movehl_ps(t3, t1)));
         }
 
+        // Create Identity matrix.
         static Mat4x4 Identity()
         {
             return Mat4x4(
@@ -67,6 +71,52 @@ namespace DropMath
                 Vec4(0, 1, 0, 0),
                 Vec4(0, 0, 1, 0),
                 Vec4(0, 0, 0, 1));
+        }
+
+        // Store matrix with exact alignment with original.
+        void StoreRowMajor(float* dst) const
+        {
+            _mm_storeu_ps(dst + 0, rows[0].v);
+            _mm_storeu_ps(dst + 4, rows[1].v);
+            _mm_storeu_ps(dst + 8, rows[2].v);
+            _mm_storeu_ps(dst + 12, rows[3].v);
+        }
+
+        // Store matrix with transposed alignment.
+        void StoreColMajor(float* dst) const
+        {
+            dst[0]  = rows[0].x;
+            dst[1]  = rows[1].x;
+            dst[2]  = rows[2].x;
+            dst[3]  = rows[3].x;
+            dst[4]  = rows[0].y;
+            dst[5]  = rows[1].y;
+            dst[6]  = rows[2].y;
+            dst[7]  = rows[3].y;
+            dst[8]  = rows[0].z;
+            dst[9]  = rows[1].z;
+            dst[10] = rows[2].z;
+            dst[11] = rows[3].z;
+            dst[12] = rows[0].w;
+            dst[13] = rows[1].w;
+            dst[14] = rows[2].w;
+            dst[15] = rows[3].w;
+        }
+
+        void Store(float* dst, MATRIX_ALLIGNMENT alignment) const
+        {
+            switch (alignment)
+            {
+            case MATRIX_ALLIGNMENT_ROW_MAJOR:
+                return StoreRowMajor(dst);
+                break;
+            case MATRIX_ALLIGNMENT_COLUMN_MAJOR:
+                return StoreColMajor(dst);
+                break;
+            default:
+                assert(false, "Unknown matrix allignment.");
+                break;
+            }
         }
     };
 

@@ -1,0 +1,5 @@
+#pragma once
+
+#define DM_EPSILON 1e-6
+
+#define DM_PI 3.1415926535897932384626433832795

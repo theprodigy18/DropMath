@@ -11,8 +11,8 @@ outdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 project "Lib"
 	location "Lib"
 	kind "StaticLib"
-	language "C"
-	cdialect "C11"
+	language "C++"
+	cppdialect "C++11"
 
 	targetdir ("bin/" .. outdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outdir .. "/%{prj.name}")
