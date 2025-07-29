@@ -1,45 +1,56 @@
 #pragma once
 
-#include "../DM_Common.h"
-#include "../DM_Constant.h"
+#include "../utils/DM_Utils.h"
 
 namespace DropMath
 {
     struct Vec2
     {
-        float x;
-        float y;
+        union
+        {
+            struct
+            {
+                float x, y;
+            };
+            float array[2]; // Don't use this directly. You need to use [] operator or x, y.
+        };
 
         Vec2() : x(0), y(0) { }
         Vec2(float x, float y) : x(x), y(y) { }
 
-        Vec2 operator+(const Vec2& v) const { return Vec2(x + v.x, y + v.y); }
-        Vec2 operator-(const Vec2& v) const { return Vec2(x - v.x, y - v.y); }
-        Vec2 operator*(float s) const { return Vec2(x * s, y * s); }
-        Vec2 operator/(float s) const { return Vec2(x / s, y / s); }
-        bool operator==(const Vec2& v) const { return (fabs(x - v.x) < DM_EPSILON) && (fabs(y - v.y) < DM_EPSILON); }
-        bool operator!=(const Vec2& v) const { return !(*this == v); }
+        float&       operator[](int i);
+        const float& operator[](int i) const;
+        Vec2         operator+(const Vec2& v) const { return Vec2(x + v.x, y + v.y); }
+        Vec2         operator-(const Vec2& v) const { return Vec2(x - v.x, y - v.y); }
+        Vec2         operator*(float s) const { return Vec2(x * s, y * s); }
+        Vec2         operator/(float s) const { return Vec2(x / s, y / s); }
+        bool         operator==(const Vec2& v) const;
+        bool         operator!=(const Vec2& v) const;
 
-        float Length() const { return sqrtf(LengthSquared()); }
+        // Return matrix data so you can use it directly as a float array.
+        float* Data() { return &x; }
+        // Return matrix data so you can use it directly as a float array.
+        const float* Data() const { return &x; }
 
         float LengthSquared() const { return x * x + y * y; }
 
+        float Length() const;
+
         // Normalize the length of the vector so that it is 1.
-        void Normalize()
+        void Normalize();
+
+        // Store the vector into array of floats.
+        void Store(float* dst) const
         {
-            float len = Length();
-            if (len > DM_EPSILON)
-            {
-                x /= len;
-                y /= len;
-            }
+            dst[0] = x;
+            dst[1] = y;
         }
 
         // Dot product of a and b.
         static float Dot(const Vec2& a, const Vec2& b) { return a.x * b.x + a.y * b.y; }
 
         // Lerp between a and b with t as the interpolation. 0 means a, 1 means b, and 0.5 means the middle.
-        static Vec2 Lerp(const Vec2& a, const Vec2& b, float t) { return a * (1 - t) + b * t; }
+        static Vec2 Lerp(const Vec2& a, const Vec2& b, float t);
 
         // Returns the zero vector (0, 0).
         static Vec2 Zero() { return Vec2(0, 0); }
@@ -56,3 +67,5 @@ namespace DropMath
     };
 
 } // namespace Drop
+
+#include "DM_Vec2.inl"

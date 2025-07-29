@@ -66,6 +66,13 @@ void TestMat4x4_Transpose()
     assert(t[1] == Vec4(2.0f, 6.0f, 10.0f, 14.0f));
     assert(t[2] == Vec4(3.0f, 7.0f, 11.0f, 15.0f));
     assert(t[3] == Vec4(4.0f, 8.0f, 12.0f, 16.0f));
+
+	// Test static version.
+	Mat4x4 t2 = Mat4x4::Transpose(t);
+    assert(t2[0] == m[0]);
+	assert(t2[1] == m[1]);
+	assert(t2[2] == m[2]);
+	assert(t2[3] == m[3]);
 }
 
 // Testing store Mat4x4 to float array.
@@ -97,6 +104,78 @@ void TestMat4x4_Store()
         assert(colMajor[i] == expectedColMajor[i]);
 }
 
+// NEWER TESTS.
+
+// Testing indexing and data layout.
+void TestMat4x4_Indexing()
+{
+    Mat4x4 m(
+        Vec4(1.0f, 2.0f, 3.0f, 4.0f),
+        Vec4(5.0f, 6.0f, 7.0f, 8.0f),
+        Vec4(9.0f, 10.0f, 11.0f, 12.0f),
+        Vec4(13.0f, 14.0f, 15.0f, 16.0f));
+
+    // Accessing using m[i][j].
+    assert(m[0][0] == 1.0f);
+    assert(m[1][1] == 6.0f);
+    assert(m[2][2] == 11.0f);
+    assert(m[3][3] == 16.0f);
+
+    // Writing using operator[].
+    m[0][0] = 100.0f;
+    assert(m[0].x == 100.0f);
+}
+
+// Testing pointer access via Data().
+void TestMat4x4_DataPointer()
+{
+    Mat4x4 m(
+        Vec4(1.0f, 2.0f, 3.0f, 4.0f),
+        Vec4(5.0f, 6.0f, 7.0f, 8.0f),
+        Vec4(9.0f, 10.0f, 11.0f, 12.0f),
+        Vec4(13.0f, 14.0f, 15.0f, 16.0f));
+
+    const float* data = m.Data();
+    for (int i = 0; i < 16; ++i)
+    {
+        assert(data[i] == (float) (i + 1));
+    }
+
+    // Modify via pointer.
+    float* d = m.Data();
+    d[0]     = 99.0f;
+    assert(m[0].x == 99.0f);
+}
+
+// Testing individual store methods.
+void TestMat4x4_StoreRowColMajor()
+{
+    Mat4x4 m(
+        Vec4(1.0f, 2.0f, 3.0f, 4.0f),
+        Vec4(5.0f, 6.0f, 7.0f, 8.0f),
+        Vec4(9.0f, 10.0f, 11.0f, 12.0f),
+        Vec4(13.0f, 14.0f, 15.0f, 16.0f));
+
+    float row[16];
+    float col[16];
+
+    m.StoreRowMajor(row);
+    m.StoreColMajor(col);
+
+    for (int i = 0; i < 16; ++i)
+    {
+        assert(row[i] == (float) (i + 1));
+    }
+
+    float expectedColMajor[16] = {
+        1.0f, 5.0f, 9.0f, 13.0f,
+        2.0f, 6.0f, 10.0f, 14.0f,
+        3.0f, 7.0f, 11.0f, 15.0f,
+        4.0f, 8.0f, 12.0f, 16.0f};
+    for (int i = 0; i < 16; ++i)
+        assert(col[i] == expectedColMajor[i]);
+}
+
 int main()
 {
     using Clock = std::chrono::high_resolution_clock;
@@ -107,6 +186,10 @@ int main()
     TestMat4x4_MultiplyMat4x4();
     TestMat4x4_Transpose();
     TestMat4x4_Store();
+	// NEWER TESTS.
+	TestMat4x4_Indexing();
+	TestMat4x4_DataPointer();
+	TestMat4x4_StoreRowColMajor();
 
     auto                                      end     = Clock::now();
     std::chrono::duration<double, std::milli> elapsed = end - start;

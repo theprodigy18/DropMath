@@ -1,23 +1,23 @@
 #pragma once
 
 #include "../DM_Enum.h"
-#include "../vec/DM_Vec4.h"
+#include "../vec/DM_Vec2.h"
 
 namespace DropMath
 {
-    struct alignas(16) Mat4x4
+    struct Mat2x2
     {
-        Vec4 rows[4];
+        Vec2 rows[2];
 
-        Mat4x4() : rows {Vec4(), Vec4(), Vec4(), Vec4()} { };
-        Mat4x4(Vec4 r0, Vec4 r1, Vec4 r2, Vec4 r3) : rows {r0, r1, r2, r3} { }
+        Mat2x2() : rows {Vec2(), Vec2()} { }
+        Mat2x2(Vec2 r0, Vec2 r1) : rows {r0, r1} { }
 
-        Vec4&       operator[](int i);
-        const Vec4& operator[](int i) const;
-        // Matrix × Vector.
-        Vec4 operator*(const Vec4& v) const;
-        // Matrix × Matrix.
-        Mat4x4 operator*(const Mat4x4& m) const;
+        Vec2&       operator[](int i);
+        const Vec2& operator[](int i) const;
+        // Matrix x Vector.
+        Vec2 operator*(const Vec2& v) const;
+        // Matrix x Matrix.
+        Mat2x2 operator*(const Mat2x2& m) const;
 
         // Return matrix data so you can use it directly as a float array.
         float* Data() { return reinterpret_cast<float*>(&rows[0]); }
@@ -25,7 +25,7 @@ namespace DropMath
         const float* Data() const { return reinterpret_cast<const float*>(&rows[0]); }
 
         // Return Transposed matrix.
-        Mat4x4 Transposed() const;
+        Mat2x2 Transposed() const;
 
         // Store matrix with exact alignment with original.
         void StoreRowMajor(float* dst) const;
@@ -37,12 +37,11 @@ namespace DropMath
         void Store(float* dst, MATRIX_ALLIGNMENT alignment) const;
 
         // Static version to transpose matrix.
-        static Mat4x4 Transpose(const Mat4x4& m);
+        static Mat2x2 Transpose(const Mat2x2& m);
 
         // Create Identity matrix.
-        static Mat4x4 Identity();
+        static Mat2x2 Identity() { return Mat2x2(Vec2(1, 0), Vec2(0, 1)); }
     };
-
 } // namespace DropMath
 
-#include "DM_Mat4x4.inl"
+#include "DM_Mat2x2.inl"

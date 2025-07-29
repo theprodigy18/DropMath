@@ -1,10 +1,8 @@
 #pragma once
 
-#ifdef USE_SIMD
 #include <smmintrin.h>
 
 using float4 = __m128;
-#endif // USE_SIMD
+using double2 = __m128d;
 
-#include <math.h>
-#include <assert.h>
+#include <cassert>

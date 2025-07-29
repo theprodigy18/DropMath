@@ -6,36 +6,48 @@ namespace DropMath
 {
     struct Vec3
     {
-        float x;
-        float y;
-        float z;
+        union
+        {
+            struct
+            {
+                float x, y, z;
+            };
+            float array[3]; // Don't use this directly. You need to use [] operator or x, y, z.
+        };
 
         Vec3() : x(0), y(0), z(0) { }
         Vec3(float x, float y, float z) : x(x), y(y), z(z) { }
         Vec3(const Vec2& v, float z) : x(v.x), y(v.y), z(z) { }
 
-        Vec3 operator+(const Vec3& v) const { return Vec3(x + v.x, y + v.y, z + v.z); }
-        Vec3 operator+(const Vec2& v) const { return Vec3(x + v.x, y + v.y, z); }
-        Vec3 operator-(const Vec3& v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
-        Vec3 operator-(const Vec2& v) const { return Vec3(x - v.x, y - v.y, z); }
-        Vec3 operator*(float s) const { return Vec3(x * s, y * s, z * s); }
-        Vec3 operator/(float s) const { return Vec3(x / s, y / s, z / s); }
-        bool operator==(const Vec3& v) const { return (fabs(x - v.x) < DM_EPSILON) && (fabs(y - v.y) < DM_EPSILON) && (fabs(z - v.z) < DM_EPSILON); }
-        bool operator!=(const Vec3& v) const { return !(*this == v); }
+        float&       operator[](int i);
+        const float& operator[](int i) const;
+        Vec3         operator+(const Vec3& v) const { return Vec3(x + v.x, y + v.y, z + v.z); }
+        Vec3         operator+(const Vec2& v) const { return Vec3(x + v.x, y + v.y, z); }
+        Vec3         operator-(const Vec3& v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
+        Vec3         operator-(const Vec2& v) const { return Vec3(x - v.x, y - v.y, z); }
+        Vec3         operator*(float s) const { return Vec3(x * s, y * s, z * s); }
+        Vec3         operator/(float s) const { return Vec3(x / s, y / s, z / s); }
+        bool         operator==(const Vec3& v) const;
+        bool         operator!=(const Vec3& v) const;
 
-        float Length() const { return sqrt(LengthSquared()); }
+        // Return matrix data so you can use it directly as a float array.
+        float* Data() { return &x; }
+        // Return matrix data so you can use it directly as a float array.
+        const float* Data() const { return &x; }
+
         float LengthSquared() const { return x * x + y * y + z * z; }
 
+        float Length() const;
+
         // Normalize the length of the vector so that it is 1.
-        void Normalize()
+        void Normalize();
+
+        // Store the vector into array of floats.
+        void Store(float* dst) const
         {
-            float len = Length();
-            if (len > DM_EPSILON)
-            {
-                x /= len;
-                y /= len;
-                z /= len;
-            }
+            dst[0] = x;
+            dst[1] = y;
+            dst[2] = z;
         }
 
         // Dot product of a and b.
@@ -50,7 +62,7 @@ namespace DropMath
         }
 
         // Lerp between a and b with t as the interpolation. 0 means a, 1 means b, and 0.5 means the middle.
-        static Vec3 Lerp(const Vec3& a, const Vec3& b, float t) { return a * (1 - t) + b * t; }
+        static Vec3 Lerp(const Vec3& a, const Vec3& b, float t);
 
         // Returns the zero vector (0, 0, 0).
         static Vec3 Zero() { return Vec3(0, 0, 0); }
@@ -71,3 +83,5 @@ namespace DropMath
     };
 
 } // namespace DropMath
+
+#include "DM_Vec3.inl"
