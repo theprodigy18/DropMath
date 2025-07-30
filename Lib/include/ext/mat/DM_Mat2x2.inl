@@ -21,6 +21,8 @@ namespace DropMath
             Vec2(Vec2::Dot(rows[1], t[0]), Vec2::Dot(rows[1], t[1])));
     }
 
+    inline float Mat2x2::Determinant() const { return Determinant2x2(*this); }
+
     inline Mat2x2 Mat2x2::Transposed() const { return Mat2x2(Vec2(rows[0][0], rows[1][0]), Vec2(rows[0][1], rows[1][1])); }
 
     inline void Mat2x2::StoreRowMajor(float* dst) const
@@ -53,6 +55,19 @@ namespace DropMath
             assert(false, "Unknown matrix allignment.");
             break;
         }
+    }
+
+    inline Mat2x2 Mat2x2::Inverse() const
+    {
+        Mat2x2 out;
+        bool   result = TryInverse(*this, out);
+        assert(result);
+        return out;
+    }
+
+    inline bool Mat2x2::TryInverse(const Mat2x2& m, Mat2x2& out)
+    {
+        return TryInverse2x2(m, out);
     }
 
     inline Mat2x2 Mat2x2::Transpose(const Mat2x2& m) { return Mat2x2(Vec2(m[0][0], m[1][0]), Vec2(m[0][1], m[1][1])); }

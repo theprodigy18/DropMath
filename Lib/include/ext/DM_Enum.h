@@ -1,7 +1,10 @@
 #pragma once
 
-enum MATRIX_ALLIGNMENT
+namespace DropMath
 {
-    MATRIX_ALLIGNMENT_ROW_MAJOR,
-    MATRIX_ALLIGNMENT_COLUMN_MAJOR
-};
+    enum MATRIX_ALLIGNMENT
+    {
+        MATRIX_ALLIGNMENT_ROW_MAJOR,
+        MATRIX_ALLIGNMENT_COLUMN_MAJOR
+    };
+} // namespace DropMath

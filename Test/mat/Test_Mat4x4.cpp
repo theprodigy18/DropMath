@@ -104,8 +104,6 @@ void TestMat4x4_Store()
         assert(colMajor[i] == expectedColMajor[i]);
 }
 
-// NEWER TESTS.
-
 // Testing indexing and data layout.
 void TestMat4x4_Indexing()
 {
@@ -176,6 +174,68 @@ void TestMat4x4_StoreRowColMajor()
         assert(col[i] == expectedColMajor[i]);
 }
 
+// NEWER TESTS.
+
+// Testing Determinant computation.
+void TestMat4x4_Determinant()
+{
+    Mat4x4 m(
+        Vec4(1.0f, 2.0f, 3.0f, 4.0f),
+        Vec4(5.0f, 6.0f, 7.0f, 8.0f),
+        Vec4(9.0f, 10.0f, 11.0f, 12.0f),
+        Vec4(13.0f, 14.0f, 15.0f, 16.0f));
+
+    float det = m.Determinant();
+    assert(IsZero(det)); // Known singular matrix.
+}
+
+// Testing Inverse and Matrix * Inverse == Identity.
+void TestMat4x4_Inverse()
+{
+    Mat4x4 m(
+        Vec4(5.0f, 7.0f, 9.0f, 10.0f),
+        Vec4(2.0f, 3.0f, 3.0f, 8.0f),
+        Vec4(8.0f, 10.0f, 2.0f, 3.0f),
+        Vec4(3.0f, 3.0f, 4.0f, 8.0f));
+
+    Mat4x4 inv = m.Inverse();
+    Mat4x4 id  = m * inv;
+
+    // Identity matrix check.
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
+            assert(IsZero(id[i][j] - (i == j ? 1.0f : 0.0f)));
+}
+
+// Testing TryInverse with success and failure cases.
+void TestMat4x4_TryInverse()
+{
+    Mat4x4 m(
+        Vec4(5.0f, 7.0f, 9.0f, 10.0f),
+        Vec4(2.0f, 3.0f, 3.0f, 8.0f),
+        Vec4(8.0f, 10.0f, 2.0f, 3.0f),
+        Vec4(3.0f, 3.0f, 4.0f, 8.0f));
+
+    Mat4x4 out;
+    bool   success = Mat4x4::TryInverse(m, out);
+    assert(success);
+
+    Mat4x4 id = m * out;
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
+            assert(IsZero(id[i][j] - (i == j ? 1.0f : 0.0f)));
+
+    // Singular matrix test.
+    Mat4x4 singular(
+        Vec4(1.0f, 2.0f, 3.0f, 4.0f),
+        Vec4(5.0f, 6.0f, 7.0f, 8.0f),
+        Vec4(9.0f, 10.0f, 11.0f, 12.0f),
+        Vec4(13.0f, 14.0f, 15.0f, 16.0f));
+
+    success = Mat4x4::TryInverse(singular, out);
+    assert(!success);
+}
+
 int main()
 {
     using Clock = std::chrono::high_resolution_clock;
@@ -186,10 +246,13 @@ int main()
     TestMat4x4_MultiplyMat4x4();
     TestMat4x4_Transpose();
     TestMat4x4_Store();
-	// NEWER TESTS.
 	TestMat4x4_Indexing();
 	TestMat4x4_DataPointer();
 	TestMat4x4_StoreRowColMajor();
+	// NEWER TESTS.
+	TestMat4x4_Determinant();
+	TestMat4x4_Inverse();
+	TestMat4x4_TryInverse();
 
     auto                                      end     = Clock::now();
     std::chrono::duration<double, std::milli> elapsed = end - start;

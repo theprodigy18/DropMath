@@ -35,6 +35,8 @@ namespace DropMath
         return result;
     }
 
+    inline float Mat4x4::Determinant() const { return Determinant4x4(*this); }
+
     inline Mat4x4 Mat4x4::Transposed() const
     {
         // Transpose 4x4 matrix using SSE.
@@ -97,6 +99,19 @@ namespace DropMath
             assert(false, "Unknown matrix allignment.");
             break;
         }
+    }
+
+    inline Mat4x4 Mat4x4::Inverse() const
+    {
+        Mat4x4 out;
+        bool   result = TryInverse(*this, out);
+        assert(result);
+        return out;
+    }
+
+    inline bool Mat4x4::TryInverse(const Mat4x4& m, Mat4x4& out)
+    {
+        return TryInverse4x4(m, out);
     }
 
     inline Mat4x4 Mat4x4::Transpose(const Mat4x4& m)

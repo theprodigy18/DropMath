@@ -14,12 +14,12 @@ namespace DropMath
     inline bool Vec3::operator==(const Vec3& v) const { return IsZero(x - v.x) && IsZero(y - v.y) && IsZero(z - v.z); }
     inline bool Vec3::operator!=(const Vec3& v) const { return !(*this == v); }
 
-    inline float Vec3::Length() const { return SqrtF(LengthSquared()); }
+    inline float Vec3::Length() const { return Sqrt(LengthSquared()); }
 
     inline void Vec3::Normalize()
     {
         float len = Length();
-        if (len > DM_EPSILON)
+        if (len > F::EPSILON)
         {
             x /= len;
             y /= len;

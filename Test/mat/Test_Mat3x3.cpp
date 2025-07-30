@@ -95,8 +95,6 @@ void TestMat3x3_Store()
         assert(colMajor[i] == expectedColMajor[i]);
 }
 
-// NEWER TESTS.
-
 // Testing indexing and data layout.
 void TestMat3x3_Indexing()
 {
@@ -158,6 +156,78 @@ void TestMat3x3_StoreRowColMajor()
         assert(col[i] == expectedColMajor[i]);
 }
 
+// NEWER TESTS.
+
+// Testing Determinant computation.
+void TestMat3x3_Determinant()
+{
+    Mat3x3 m(
+        Vec3(6.0f, 1.0f, 1.0f),
+        Vec3(4.0f, -2.0f, 5.0f),
+        Vec3(2.0f, 8.0f, 7.0f));
+
+    float det = m.Determinant();
+    assert(IsZero(det - (-306.0f)));
+}
+
+// Testing Inverse and Matrix * Inverse == Identity.
+void TestMat3x3_Inverse()
+{
+    Mat3x3 m(
+        Vec3(3.0f, 0.0f, 2.0f),
+        Vec3(2.0f, 0.0f, -2.0f),
+        Vec3(0.0f, 1.0f, 1.0f));
+
+    Mat3x3 inv = m.Inverse();
+    Mat3x3 id  = m * inv;
+
+    // Identity matrix check.
+    assert(IsZero(id[0][0] - 1.0f));
+    assert(IsZero(id[0][1] - 0.0f));
+    assert(IsZero(id[0][2] - 0.0f));
+
+    assert(IsZero(id[1][0] - 0.0f));
+    assert(IsZero(id[1][1] - 1.0f));
+    assert(IsZero(id[1][2] - 0.0f));
+
+    assert(IsZero(id[2][0] - 0.0f));
+    assert(IsZero(id[2][1] - 0.0f));
+    assert(IsZero(id[2][2] - 1.0f));
+}
+
+// Testing TryInverse with success and failure cases.
+void TestMat3x3_TryInverse()
+{
+    Mat3x3 m(
+        Vec3(3.0f, 0.0f, 2.0f),
+        Vec3(2.0f, 0.0f, -2.0f),
+        Vec3(0.0f, 1.0f, 1.0f));
+
+    Mat3x3 out;
+    bool   success = Mat3x3::TryInverse(m, out);
+    assert(success);
+
+    Mat3x3 id = m * out;
+    assert(IsZero(id[0][0] - 1.0f));
+    assert(IsZero(id[0][1] - 0.0f));
+    assert(IsZero(id[0][2] - 0.0f));
+    assert(IsZero(id[1][0] - 0.0f));
+    assert(IsZero(id[1][1] - 1.0f));
+    assert(IsZero(id[1][2] - 0.0f));
+    assert(IsZero(id[2][0] - 0.0f));
+    assert(IsZero(id[2][1] - 0.0f));
+    assert(IsZero(id[2][2] - 1.0f));
+
+    // Singular matrix (det = 0), second row is multiple of the first.
+    Mat3x3 singular(
+        Vec3(1.0f, 2.0f, 3.0f),
+        Vec3(2.0f, 4.0f, 6.0f),
+        Vec3(7.0f, 8.0f, 9.0f));
+
+    success = Mat3x3::TryInverse(singular, out);
+    assert(!success);
+}
+
 int main()
 {
     using Clock = std::chrono::high_resolution_clock;
@@ -168,10 +238,13 @@ int main()
     TestMat3x3_MultiplyMat3x3();
     TestMat3x3_Transpose();
     TestMat3x3_Store();
-    // NEWER TESTS.
     TestMat3x3_Indexing();
     TestMat3x3_DataPointer();
     TestMat3x3_StoreRowColMajor();
+    // NEWER TESTS.
+	TestMat3x3_Determinant();
+	TestMat3x3_Inverse();
+	TestMat3x3_TryInverse();
 
     auto                                      end     = Clock::now();
     std::chrono::duration<double, std::milli> elapsed = end - start;

@@ -86,8 +86,6 @@ void TestMat2x2_Store()
         assert(colMajor[i] == expectedColMajor[i]);
 }
 
-// NEWER TESTS.
-
 // Testing indexing and data layout.
 void TestMat2x2_Indexing()
 {
@@ -144,6 +142,63 @@ void TestMat2x2_StoreRowColMajor()
         assert(col[i] == expectedColMajor[i]);
 }
 
+// NEWER TESTS.
+
+// Testing Determinant computation.
+void TestMat2x2_Determinant()
+{
+    Mat2x2 m(
+        Vec2(4.0f, 7.0f),
+        Vec2(2.0f, 6.0f));
+
+    float det = m.Determinant();
+    assert(IsZero(det - (4.0f * 6.0f - 7.0f * 2.0f)));
+}
+
+// Testing Inverse and Matrix * Inverse == Identity.
+void TestMat2x2_Inverse()
+{
+    Mat2x2 m(
+        Vec2(4.0f, 7.0f),
+        Vec2(2.0f, 6.0f));
+
+    Mat2x2 inv = m.Inverse();
+    Mat2x2 id  = m * inv;
+
+    // Identity matrix check.
+    assert(IsZero(id[0][0] - 1.0f));
+    assert(IsZero(id[0][1] - 0.0f));
+    assert(IsZero(id[1][0] - 0.0f));
+    assert(IsZero(id[1][1] - 1.0f));
+}
+
+// Testing TryInverse with success and failure cases.
+void TestMat2x2_TryInverse()
+{
+    Mat2x2 m(
+        Vec2(1.0f, 2.0f),
+        Vec2(3.0f, 4.0f));
+
+    Mat2x2 out;
+    bool   success = Mat2x2::TryInverse(m, out);
+    assert(success);
+
+    Mat2x2 id = m * out;
+    assert(IsZero(id[0][0] - 1.0f));
+    assert(IsZero(id[0][1] - 0.0f));
+    assert(IsZero(id[1][0] - 0.0f));
+    assert(IsZero(id[1][1] - 1.0f));
+
+    // Singular matrix (det = 0), first row is multiple of the second.
+    Mat2x2 singular(
+        Vec2(2.0f, 4.0f),
+        Vec2(1.0f, 2.0f));
+
+    success = Mat2x2::TryInverse(singular, out);
+    assert(!success);
+}
+
+
 int main()
 {
     using Clock = std::chrono::high_resolution_clock;
@@ -154,10 +209,13 @@ int main()
     TestMat2x2_MultiplyMat2x2();
     TestMat2x2_Transpose();
     TestMat2x2_Store();
-    // NEWER TESTS.
     TestMat2x2_Indexing();
     TestMat2x2_DataPointer();
     TestMat2x2_StoreRowColMajor();
+    // NEWER TESTS.
+	TestMat2x2_Determinant();
+	TestMat2x2_Inverse();
+	TestMat2x2_TryInverse();
 
     auto                                      end     = Clock::now();
     std::chrono::duration<double, std::milli> elapsed = end - start;

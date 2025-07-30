@@ -28,6 +28,8 @@ namespace DropMath
             Vec3(Vec3::Dot(rows[2], t[0]), Vec3::Dot(rows[2], t[1]), Vec3::Dot(rows[2], t[2])));
     }
 
+    inline float Mat3x3::Determinant() const { return Determinant3x3(*this); }
+
     inline Mat3x3 Mat3x3::Transposed() const
     {
         return Mat3x3(
@@ -77,6 +79,19 @@ namespace DropMath
             return StoreRowMajor(dst);
             break;
         }
+    }
+
+    inline Mat3x3 Mat3x3::Inverse() const
+    {
+        Mat3x3 out;
+        bool   result = TryInverse(*this, out);
+        assert(result);
+        return out;
+    }
+
+    inline bool Mat3x3::TryInverse(const Mat3x3& m, Mat3x3& out)
+    {
+        return TryInverse3x3(m, out);
     }
 
     inline Mat3x3 Mat3x3::Transpose(const Mat3x3& m)
