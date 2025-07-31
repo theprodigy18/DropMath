@@ -4,18 +4,17 @@ namespace DropMath
 	namespace
 	{
         const float4 g_EPSILON_F   = _mm_set1_ps(F::EPSILON);
-
-		DM_CONSTEXPR int g_DOT_MASK = 0b11110001;
+        const float4  g_SIGN_MASK_F = _mm_castsi128_ps(_mm_set1_epi32(F::SIGN_MASK));
 	} // anonymous namespace
 
     inline float& Vec4::operator[](int i)
     {
-        assert(i >= 0 && i < 4);
+        DM_ASSERT(i >= 0 && i < 4);
         return array[i];
     }
     inline const float& Vec4::operator[](int i) const
     {
-        assert(i >= 0 && i < 4);
+        DM_ASSERT(i >= 0 && i < 4);
         return array[i];
     }
     inline bool Vec4::operator==(const Vec4& v) const
@@ -30,14 +29,14 @@ namespace DropMath
 
     inline float Vec4::Length() const
     {
-        float4 dot  = _mm_dp_ps(v, v, g_DOT_MASK);
+        float4 dot  = _mm_dp_ps(v, v, DOT_MASK);
         float4 sqrt = _mm_sqrt_ps(dot);
         return _mm_cvtss_f32(sqrt);
     }
 
     inline float Vec4::LengthSquared() const
     {
-        float4 dot = _mm_dp_ps(v, v, g_DOT_MASK);
+        float4 dot = _mm_dp_ps(v, v, DOT_MASK);
         return _mm_cvtss_f32(dot);
     }
 
@@ -52,7 +51,7 @@ namespace DropMath
 
     inline float Vec4::Dot(const Vec4& a, const Vec4& b)
     {
-        float4 dot = _mm_dp_ps(a.v, b.v, g_DOT_MASK);
+        float4 dot = _mm_dp_ps(a.v, b.v, DOT_MASK);
         return _mm_cvtss_f32(dot);
     }
 

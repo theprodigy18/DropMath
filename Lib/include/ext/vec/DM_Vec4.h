@@ -34,9 +34,9 @@ namespace DropMath
         bool         operator==(const Vec4& v) const;
         bool         operator!=(const Vec4& v) const;
 
-        // Return matrix data so you can use it directly as a float array.
+        // Return vector data so you can use it directly as a float array.
         float* Data() { return &x; }
-        // Return matrix data so you can use it directly as a float array.
+        // Return vector data so you can use it directly as a float array.
         const float* Data() const { return &x; }
 
         float Length() const;
@@ -60,7 +60,7 @@ namespace DropMath
         // Returns the one vector (1, 1, 1, 1).
         static Vec4 One() { return Vec4(_mm_set1_ps(1.0f)); }
 
-        explicit Vec4(const float4& v) : v(v) { }
+        DM_CONSTEXPR explicit Vec4(const float4& v) : v(v) { }
     };
 
 }

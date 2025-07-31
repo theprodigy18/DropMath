@@ -1,18 +1,18 @@
 
 namespace DropMath
 {
-    inline Vec2& Mat2x2::operator[](int i)
+    DM_CONSTEXPR_14 inline Vec2& Mat2x2::operator[](int i)
     {
-        assert(i >= 0 && i < 2);
+        DM_ASSERT(i >= 0 && i < 2);
         return rows[i];
     }
-    inline const Vec2& Mat2x2::operator[](int i) const
+    DM_CONSTEXPR_14 inline const Vec2& Mat2x2::operator[](int i) const
     {
-        assert(i >= 0 && i < 2);
+        DM_ASSERT(i >= 0 && i < 2);
         return rows[i];
     }
-    inline Vec2   Mat2x2::operator*(const Vec2& v) const { return Vec2(Vec2::Dot(rows[0], v), Vec2::Dot(rows[1], v)); }
-    inline Mat2x2 Mat2x2::operator*(const Mat2x2& m) const
+    DM_CONSTEXPR inline Vec2   Mat2x2::operator*(const Vec2& v) const { return Vec2(Vec2::Dot(rows[0], v), Vec2::Dot(rows[1], v)); }
+    DM_CONSTEXPR_14 inline Mat2x2 Mat2x2::operator*(const Mat2x2& m) const
     {
         Mat2x2 t = m.Transposed();
 
@@ -23,7 +23,7 @@ namespace DropMath
 
     inline float Mat2x2::Determinant() const { return Determinant2x2(*this); }
 
-    inline Mat2x2 Mat2x2::Transposed() const { return Mat2x2(Vec2(rows[0][0], rows[1][0]), Vec2(rows[0][1], rows[1][1])); }
+    DM_CONSTEXPR inline Mat2x2 Mat2x2::Transposed() const { return Mat2x2(Vec2(rows[0].x, rows[1].x), Vec2(rows[0].y, rows[1].y)); }
 
     inline void Mat2x2::StoreRowMajor(float* dst) const
     {
@@ -52,16 +52,18 @@ namespace DropMath
             return StoreColMajor(dst);
             break;
         default:
-            assert(false, "Unknown matrix allignment.");
+            DM_ASSERT(false);
             break;
         }
+
+		return StoreRowMajor(dst);
     }
 
     inline Mat2x2 Mat2x2::Inverse() const
     {
         Mat2x2 out;
         bool   result = TryInverse(*this, out);
-        assert(result);
+        DM_ASSERT(result);
         return out;
     }
 
@@ -70,5 +72,5 @@ namespace DropMath
         return TryInverse2x2(m, out);
     }
 
-    inline Mat2x2 Mat2x2::Transpose(const Mat2x2& m) { return Mat2x2(Vec2(m[0][0], m[1][0]), Vec2(m[0][1], m[1][1])); }
+    DM_CONSTEXPR inline Mat2x2 Mat2x2::Transpose(const Mat2x2& m) { return Mat2x2(Vec2(m[0].x, m[1].x), Vec2(m[0].y, m[1].y)); }
 } // namespace Dropmath

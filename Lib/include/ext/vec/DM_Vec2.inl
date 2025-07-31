@@ -3,12 +3,12 @@ namespace DropMath
 {
     inline float& Vec2::operator[](int i)
     {
-        assert(i >= 0 && i < 2);
+		DM_ASSERT(i >= 0 && i < 2);
         return array[i];
     }
     inline const float& Vec2::operator[](int i) const
     {
-        assert(i >= 0 && i < 2);
+        DM_ASSERT(i >= 0 && i < 2);
         return array[i];
     }
     inline bool Vec2::operator==(const Vec2& v) const { return IsZero(x - v.x) && IsZero(y - v.y); }
@@ -26,6 +26,13 @@ namespace DropMath
         }
     }
 
-    inline Vec2 Vec2::Lerp(const Vec2& a, const Vec2& b, float t) { return DropMath::Lerp(a, b, t); }
+	inline Vec2 Vec2::Normalized() const
+	{
+		Vec2 v = *this;
+		v.Normalize();
+		return v;
+	}
+
+    DM_CONSTEXPR inline Vec2 Vec2::Lerp(const Vec2& a, const Vec2& b, float t) { return DropMath::Lerp(a, b, t); }
 
 } // namespace DropMath

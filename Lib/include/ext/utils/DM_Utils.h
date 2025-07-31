@@ -25,6 +25,11 @@ namespace DropMath
     // Return the rad(double) in the range [-pi, pi].
     DM_CONSTEXPR_14 inline double WrapPi(double rad);
 
+	// Fold the rad(float) to the range [-pi/2, pi/2]. Rad must be in the range [-pi, pi].
+	DM_CONSTEXPR_14 inline float FoldToHalfPi(float rad);
+	// Fold the rad(double) to the range [-pi/2, pi/2]. Rad must be in the range [-pi, pi].
+	DM_CONSTEXPR_14 inline double FoldToHalfPi(double rad);
+
 	// Return the degree(float) as radians.
 	DM_CONSTEXPR_14 inline float ToRadians(float deg);
 	// Return the degree(double) as radians.
@@ -46,9 +51,14 @@ namespace DropMath
     DM_CONSTEXPR_14 inline double Cos(double rad);
 
 	// Return tan of rad(float).
-    inline float  Tan(float rad);
+    inline float Tan(float rad);
 	// Return tan of rad(double).
     inline double Tan(double rad);
+
+	// Return asin of x(float).
+	inline float Asin(float x);
+	// Return asin of x(double).
+	inline double Asin(double x);
 
 	// Return 1 if x is greater than 0, 0 if x is 0, and -1 if x is less than 0.
 	DM_CONSTEXPR_14 inline float Sign(float x);
@@ -57,29 +67,33 @@ namespace DropMath
 	// Return 1 if x is greater than 0, 0 if x is 0, and -1 if x is less than 0.
 	DM_CONSTEXPR_14 inline int Sign(int x);
 
+	// Return true if a and b are equal with EPSILON tolerance.
+    inline float IsEqual(float a, float b);
+	// Return true if a and b are equal with EPSILON tolerance.
+    inline double IsEqual(double a, double b);
 
     // Lerp between a and b with t as the interpolation. 0 means a, 1 means b, and 0.5 means the middle.
     template <typename T>
-    inline T Lerp(const T& a, const T& b, float t);
+    DM_CONSTEXPR inline T Lerp(const T& a, const T& b, float t);
 
     // Return the absolute value of x(float).
     inline float Abs(float x);
     // Return the absolute value of x(double).
     inline double Abs(double x);
     // Return the absolute value of x(int).
-    DM_CONSTEXPR_14 inline int Abs(int x);
+    DM_CONSTEXPR inline int Abs(int x);
 
     // Return the lowest value. This function can be used for all data as long as they support < operator.
     template <typename T>
-    inline T Min(const T& a, const T& b);
+    DM_CONSTEXPR_14 inline T Min(const T& a, const T& b);
 
     // Return the highest value. This function can be used for all data as long as they support > operator.
     template <typename T>
-    inline T Max(const T& a, const T& b);
+    DM_CONSTEXPR_14 inline T Max(const T& a, const T& b);
 
     // Return the value clamped to the range [min, max]. This function can be used for all data as long as they support < and > operator.
     template <typename T>
-    inline T Clamp(const T& value, const T& min, const T& max);
+    DM_CONSTEXPR_14 inline T Clamp(const T& value, const T& min, const T& max);
 
     // SqrtF will calculate the square root of x(float).
     inline float Sqrt(float x);
@@ -93,15 +107,15 @@ namespace DropMath
 
     // Return the determinant of a matrix. This is valid as long as your data is 2x2 array and support [][] access.
     template <typename Mat>
-    inline float Determinant2x2(const Mat& m);
+    DM_CONSTEXPR inline float Determinant2x2(const Mat& m);
 
     // Return the determinant of a matrix. This is valid as long as your data is 3x3 array and support [][] access.
     template <typename Mat>
-    inline float Determinant3x3(const Mat& m);
+    DM_CONSTEXPR_14 inline float Determinant3x3(const Mat& m);
 
     // Return the determinant of a matrix. This is valid as long as your data is 4x4 array and support [][] access.
     template <typename Mat>
-    inline float Determinant4x4(const Mat& m);
+    DM_CONSTEXPR_14 inline float Determinant4x4(const Mat& m);
 
     // Inverse a matrix. This is valid as long as your data is 2x2 array and support [][] access.
     // Return true if it is invertable(determinant != 0).

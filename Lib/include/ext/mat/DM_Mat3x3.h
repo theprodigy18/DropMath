@@ -9,15 +9,15 @@ namespace DropMath
     {
         Vec3 rows[3];
 
-        Mat3x3() : rows {Vec3(), Vec3(), Vec3()} { }
-        Mat3x3(Vec3 r0, Vec3 r1, Vec3 r2) : rows {r0, r1, r2} { }
+        DM_CONSTEXPR Mat3x3() : rows {Vec3(), Vec3(), Vec3()} { }
+        DM_CONSTEXPR Mat3x3(Vec3 r0, Vec3 r1, Vec3 r2) : rows {r0, r1, r2} { }
 
-        Vec3&       operator[](int i);
-        const Vec3& operator[](int i) const;
+        DM_CONSTEXPR_14 Vec3& operator[](int i);
+        DM_CONSTEXPR_14 const Vec3& operator[](int i) const;
         // Matrix x Vector.
-        Vec3 operator*(const Vec3& v) const;
+        DM_CONSTEXPR Vec3 operator*(const Vec3& v) const;
         // Matrix x Matrix.
-        Mat3x3 operator*(const Mat3x3& m) const;
+        DM_CONSTEXPR_14 Mat3x3 operator*(const Mat3x3& m) const;
 
         // Return matrix data so you can use it directly as a float array.
         float* Data() { return reinterpret_cast<float*>(&rows[0]); }
@@ -28,7 +28,7 @@ namespace DropMath
         float Determinant() const;
 
         // Return Transposed matrix.
-        Mat3x3 Transposed() const;
+        DM_CONSTEXPR Mat3x3 Transposed() const;
 
         // Store matrix with exact alignment with original.
         void StoreRowMajor(float* dst) const;
@@ -47,10 +47,10 @@ namespace DropMath
         static bool TryInverse(const Mat3x3& m, Mat3x3& out);
 
         // Static version to transpose matrix.
-        static Mat3x3 Transpose(const Mat3x3& m);
+        DM_CONSTEXPR static Mat3x3 Transpose(const Mat3x3& m);
 
         // Create Identity matrix.
-        static Mat3x3 Identity();
+        DM_CONSTEXPR static Mat3x3 Identity();
     };
 } // namespace DropMath
 

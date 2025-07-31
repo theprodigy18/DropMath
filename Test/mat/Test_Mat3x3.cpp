@@ -13,14 +13,14 @@ void TestMat3x3_ConstructAndIdentity()
     Vec3   row1     = identity[1];
     Vec3   row2     = identity[2];
 
-    assert(row0 == Vec3(1.0f, 0.0f, 0.0f));
-    assert(row1 == Vec3(0.0f, 1.0f, 0.0f));
-    assert(row2 == Vec3(0.0f, 0.0f, 1.0f));
+    DM_ASSERT(row0 == Vec3(1.0f, 0.0f, 0.0f));
+    DM_ASSERT(row1 == Vec3(0.0f, 1.0f, 0.0f));
+    DM_ASSERT(row2 == Vec3(0.0f, 0.0f, 1.0f));
 
     Mat3x3 m = Mat3x3(row0, row1, row2);
-    assert(m[0] == identity[0]);
-    assert(m[1] == identity[1]);
-    assert(m[2] == identity[2]);
+    DM_ASSERT(m[0] == identity[0]);
+    DM_ASSERT(m[1] == identity[1]);
+    DM_ASSERT(m[2] == identity[2]);
 }
 
 // Testing mul operator with Vec3 that returns Vec3.
@@ -29,7 +29,7 @@ void TestMat3x3_MultiplyVec3()
     Mat3x3 identity = Mat3x3::Identity();
     Vec3   v(1.0f, 2.0f, 3.0f);
     Vec3   result = identity * v;
-    assert(result == v);
+    DM_ASSERT(result == v);
 }
 
 // Testing mul operator with Mat3x3 that returns another Mat3x3.
@@ -44,7 +44,7 @@ void TestMat3x3_MultiplyMat3x3()
     Mat3x3 result = m1 * m2;
 
     for (int i = 0; i < 3; ++i)
-        assert(result[i] == m2[i]);
+        DM_ASSERT(result[i] == m2[i]);
 }
 
 // Testing transpose.
@@ -57,15 +57,15 @@ void TestMat3x3_Transpose()
 
     Mat3x3 t = m.Transposed();
 
-    assert(t[0] == Vec3(1.0f, 4.0f, 7.0f));
-    assert(t[1] == Vec3(2.0f, 5.0f, 8.0f));
-    assert(t[2] == Vec3(3.0f, 6.0f, 9.0f));
+    DM_ASSERT(t[0] == Vec3(1.0f, 4.0f, 7.0f));
+    DM_ASSERT(t[1] == Vec3(2.0f, 5.0f, 8.0f));
+    DM_ASSERT(t[2] == Vec3(3.0f, 6.0f, 9.0f));
 
     // Test static version.
     Mat3x3 t2 = Mat3x3::Transpose(t);
-    assert(t2[0] == m[0]);
-    assert(t2[1] == m[1]);
-    assert(t2[2] == m[2]);
+    DM_ASSERT(t2[0] == m[0]);
+    DM_ASSERT(t2[1] == m[1]);
+    DM_ASSERT(t2[2] == m[2]);
 }
 
 // Testing store Mat4x4 to float array.
@@ -84,7 +84,7 @@ void TestMat3x3_Store()
 
     // Verify row-major.
     for (int i = 0; i < 9; ++i)
-        assert(rowMajor[i] == (float) (i + 1));
+        DM_ASSERT(rowMajor[i] == (float) (i + 1));
 
     // Verify column-major.
     float expectedColMajor[9] = {
@@ -92,7 +92,7 @@ void TestMat3x3_Store()
         2.0f, 5.0f, 8.0f,
         3.0f, 6.0f, 9.0f};
     for (int i = 0; i < 9; ++i)
-        assert(colMajor[i] == expectedColMajor[i]);
+        DM_ASSERT(colMajor[i] == expectedColMajor[i]);
 }
 
 // Testing indexing and data layout.
@@ -104,13 +104,13 @@ void TestMat3x3_Indexing()
         Vec3(7.0f, 8.0f, 9.0f));
 
     // Accessing using m[i][j].
-    assert(m[0][0] == 1.0f);
-    assert(m[1][1] == 5.0f);
-    assert(m[2][2] == 9.0f);
+    DM_ASSERT(m[0][0] == 1.0f);
+    DM_ASSERT(m[1][1] == 5.0f);
+    DM_ASSERT(m[2][2] == 9.0f);
 
     // Writing using operator[].
     m[0][0] = 99.0f;
-    assert(m[0].x == 99.0f);
+    DM_ASSERT(m[0].x == 99.0f);
 }
 
 // Testing pointer access via Data().
@@ -123,12 +123,12 @@ void TestMat3x3_DataPointer()
 
     const float* data = m.Data();
     for (int i = 0; i < 9; ++i)
-        assert(data[i] == (float) (i + 1));
+        DM_ASSERT(data[i] == (float) (i + 1));
 
     // Modify via pointer.
     float* d = m.Data();
     d[0]     = 77.0f;
-    assert(m[0].x == 77.0f);
+    DM_ASSERT(m[0].x == 77.0f);
 }
 
 // Testing individual store methods.
@@ -146,14 +146,14 @@ void TestMat3x3_StoreRowColMajor()
     m.StoreColMajor(col);
 
     for (int i = 0; i < 9; ++i)
-        assert(row[i] == (float) (i + 1));
+        DM_ASSERT(row[i] == (float) (i + 1));
 
     float expectedColMajor[9] = {
         1.0f, 4.0f, 7.0f,
         2.0f, 5.0f, 8.0f,
         3.0f, 6.0f, 9.0f};
     for (int i = 0; i < 9; ++i)
-        assert(col[i] == expectedColMajor[i]);
+        DM_ASSERT(col[i] == expectedColMajor[i]);
 }
 
 // NEWER TESTS.
@@ -167,7 +167,7 @@ void TestMat3x3_Determinant()
         Vec3(2.0f, 8.0f, 7.0f));
 
     float det = m.Determinant();
-    assert(IsZero(det - (-306.0f)));
+    DM_ASSERT(IsZero(det - (-306.0f)));
 }
 
 // Testing Inverse and Matrix * Inverse == Identity.
@@ -182,17 +182,17 @@ void TestMat3x3_Inverse()
     Mat3x3 id  = m * inv;
 
     // Identity matrix check.
-    assert(IsZero(id[0][0] - 1.0f));
-    assert(IsZero(id[0][1] - 0.0f));
-    assert(IsZero(id[0][2] - 0.0f));
+    DM_ASSERT(IsZero(id[0][0] - 1.0f));
+    DM_ASSERT(IsZero(id[0][1] - 0.0f));
+    DM_ASSERT(IsZero(id[0][2] - 0.0f));
 
-    assert(IsZero(id[1][0] - 0.0f));
-    assert(IsZero(id[1][1] - 1.0f));
-    assert(IsZero(id[1][2] - 0.0f));
+    DM_ASSERT(IsZero(id[1][0] - 0.0f));
+    DM_ASSERT(IsZero(id[1][1] - 1.0f));
+    DM_ASSERT(IsZero(id[1][2] - 0.0f));
 
-    assert(IsZero(id[2][0] - 0.0f));
-    assert(IsZero(id[2][1] - 0.0f));
-    assert(IsZero(id[2][2] - 1.0f));
+    DM_ASSERT(IsZero(id[2][0] - 0.0f));
+    DM_ASSERT(IsZero(id[2][1] - 0.0f));
+    DM_ASSERT(IsZero(id[2][2] - 1.0f));
 }
 
 // Testing TryInverse with success and failure cases.
@@ -205,18 +205,18 @@ void TestMat3x3_TryInverse()
 
     Mat3x3 out;
     bool   success = Mat3x3::TryInverse(m, out);
-    assert(success);
+    DM_ASSERT(success);
 
     Mat3x3 id = m * out;
-    assert(IsZero(id[0][0] - 1.0f));
-    assert(IsZero(id[0][1] - 0.0f));
-    assert(IsZero(id[0][2] - 0.0f));
-    assert(IsZero(id[1][0] - 0.0f));
-    assert(IsZero(id[1][1] - 1.0f));
-    assert(IsZero(id[1][2] - 0.0f));
-    assert(IsZero(id[2][0] - 0.0f));
-    assert(IsZero(id[2][1] - 0.0f));
-    assert(IsZero(id[2][2] - 1.0f));
+    DM_ASSERT(IsZero(id[0][0] - 1.0f));
+    DM_ASSERT(IsZero(id[0][1] - 0.0f));
+    DM_ASSERT(IsZero(id[0][2] - 0.0f));
+    DM_ASSERT(IsZero(id[1][0] - 0.0f));
+    DM_ASSERT(IsZero(id[1][1] - 1.0f));
+    DM_ASSERT(IsZero(id[1][2] - 0.0f));
+    DM_ASSERT(IsZero(id[2][0] - 0.0f));
+    DM_ASSERT(IsZero(id[2][1] - 0.0f));
+    DM_ASSERT(IsZero(id[2][2] - 1.0f));
 
     // Singular matrix (det = 0), second row is multiple of the first.
     Mat3x3 singular(
@@ -225,7 +225,7 @@ void TestMat3x3_TryInverse()
         Vec3(7.0f, 8.0f, 9.0f));
 
     success = Mat3x3::TryInverse(singular, out);
-    assert(!success);
+    DM_ASSERT(!success);
 }
 
 int main()

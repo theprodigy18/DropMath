@@ -20,7 +20,7 @@ project "Lib"
 	files
 	{
 		"%{prj.name}/**.h",
-		"%{prj.name}/**.c",
+		"%{prj.name}/**.inl",
 	}
 	includedirs
 	{
@@ -38,6 +38,9 @@ project "Lib"
 		defines "DM_RELEASE"
 		optimize "On"
 		staticruntime "On"
+		
+	filter "action:vs*"
+		buildoptions { "/Zc:__cplusplus" }
 
 project "Test"
 	location "Test"
@@ -69,4 +72,7 @@ project "Test"
 		defines "DM_RELEASE"
 		optimize "On"
 		staticruntime "On"
+	
+	filter "action:vs*"
+		buildoptions { "/Zc:__cplusplus" }
 

@@ -9,15 +9,16 @@ namespace DropMath
     {
         Vec2 rows[2];
 
-        Mat2x2() : rows {Vec2(), Vec2()} { }
-        Mat2x2(Vec2 r0, Vec2 r1) : rows {r0, r1} { }
+        DM_CONSTEXPR Mat2x2() : rows {Vec2(), Vec2()} { }
+        DM_CONSTEXPR Mat2x2(Vec2 r0, Vec2 r1) : rows {r0, r1} { }
 
-        Vec2&       operator[](int i);
-        const Vec2& operator[](int i) const;
+        DM_CONSTEXPR_14 Vec2& operator[](int i);
+        DM_CONSTEXPR_14 const Vec2& operator[](int i) const;
+
         // Matrix x Vector.
-        Vec2 operator*(const Vec2& v) const;
+        DM_CONSTEXPR Vec2 operator*(const Vec2& v) const;
         // Matrix x Matrix.
-        Mat2x2 operator*(const Mat2x2& m) const;
+        DM_CONSTEXPR_14 Mat2x2 operator*(const Mat2x2& m) const;
 
         // Return matrix data so you can use it directly as a float array.
         float* Data() { return reinterpret_cast<float*>(&rows[0]); }
@@ -28,7 +29,7 @@ namespace DropMath
         float Determinant() const;
 
         // Return Transposed matrix.
-        Mat2x2 Transposed() const;
+        DM_CONSTEXPR Mat2x2 Transposed() const;
 
         // Store matrix with exact alignment with original.
         void StoreRowMajor(float* dst) const;
@@ -47,10 +48,10 @@ namespace DropMath
         static bool TryInverse(const Mat2x2& m, Mat2x2& out);
 
         // Static version to transpose matrix.
-        static Mat2x2 Transpose(const Mat2x2& m);
+        DM_CONSTEXPR static Mat2x2 Transpose(const Mat2x2& m);
 
         // Create Identity matrix.
-        static Mat2x2 Identity() { return Mat2x2(Vec2(1, 0), Vec2(0, 1)); }
+        DM_CONSTEXPR static Mat2x2 Identity() { return Mat2x2(Vec2(1, 0), Vec2(0, 1)); }
     };
 } // namespace DropMath
 

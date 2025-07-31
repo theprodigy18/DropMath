@@ -10,10 +10,10 @@ namespace DropMath
         Vec4 rows[4];
 
         Mat4x4() : rows {Vec4(), Vec4(), Vec4(), Vec4()} { };
-        Mat4x4(Vec4 r0, Vec4 r1, Vec4 r2, Vec4 r3) : rows {r0, r1, r2, r3} { }
+        DM_CONSTEXPR Mat4x4(Vec4 r0, Vec4 r1, Vec4 r2, Vec4 r3) : rows {r0, r1, r2, r3} { }
 
-        Vec4&       operator[](int i);
-        const Vec4& operator[](int i) const;
+        DM_CONSTEXPR_14 Vec4& operator[](int i);
+        DM_CONSTEXPR_14 const Vec4& operator[](int i) const;
         // Matrix × Vector.
         Vec4 operator*(const Vec4& v) const;
         // Matrix × Matrix.

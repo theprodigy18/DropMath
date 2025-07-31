@@ -32,7 +32,7 @@ namespace DropMath
             return sign;
         }
 
-        DM_CONSTEXPR_14 inline float SinApprox(float x)
+        DM_CONSTEXPR_14 inline float SinApprox(float x) // Approximate 9 decimal precision.
         {
             float x2 = x * x;
             return ((((-2.3889859e-08f * x2 + 2.7525562e-06f) * x2 - 0.00019840874f) * x2 + 0.0083333310f) * x2 - 0.16666667f) * x2 * x + x;
@@ -41,12 +41,33 @@ namespace DropMath
         DM_CONSTEXPR_14 inline double SinApprox(double x)
         {
             double x2 = x * x;
-            return ((((((((((-1.9509019e-19 * x2 + 8.33216087e-17) * x2 - 1.95152959e-14) * x2 + 2.59230160e-12) * x2 - 2.50521084e-10) * x2 + 1.60590438e-08) * x2 - 7.64716373e-07) * x2 + 2.75573192e-05) * x2 - 0.00019841270) * x2 + 0.00833333333) * x2 - 0.16666666667) * x2 * x + x;
+            return x * (1.0 - x2 * (1.6666666666666667e-01 - x2 * (8.3333333333333333e-03 - x2 * (1.9841269841269841e-04 - x2 * (2.7557319223985891e-06 - x2 * 2.5052108385441719e-08)))));
+        }
+
+        DM_CONSTEXPR_14 inline double SinApprox_FirstOption(double x)
+        {
+            double x2 = x * x;
+            return x * (1.0 - x2 * (0.16666666666666666667 - x2 * (0.008333333333333333333 - x2 * (0.00019841269841269841270 - x2 * (2.7557319223985890653e-06 - x2 * (2.5052108385441718775e-08 - x2 * 1.6059043836821614599e-10))))));
+        }
+
+        DM_CONSTEXPR_14 inline double SinApprox_SecondOption(double x) // Approximate 15 decimal precision
+        {
+            double x2 = x * x;
+            return x * (1.0 - x2 * (0.16666666666666666667 - x2 * (0.008333333333333333333 - x2 * (0.00019841269841269841270 - x2 * (2.7557319223985890653e-06 - x2 * (2.5052108385441718775e-08 - x2 * (1.6059043836821614599e-10 - x2 * (7.6471637318198164759e-13 - x2 * (2.8114572543455207632e-15 - x2 * (8.2206352466243297170e-18 - x2 * (1.9572941063391261231e-20 - x2 * (3.8683207439209938863e-23 - x2 * (6.4469502843844733531e-26)))))))))))));
+        }
+
+        DM_CONSTEXPR_14 inline float AsinApprox(float x)
+        {
+            float x2 = x * x;
+            return x * (0.99999999999999999999f + x2 * (0.16666666666664880952f + x2 * (0.07500000000378581832f + x2 * (0.04464285714375711084f + x2 * (0.03038194446351570592f + x2 * 0.02237176021343817644f)))));
+        }
+
+        DM_CONSTEXPR_14 inline double AsinApprox(double x)
+        {
+            double x2 = x * x;
+            return x * (1.0 + x2 * (0.166666666666666666666666666667 + x2 * (0.075000000000000000000000000000 + x2 * (0.044642857142857142857142857143 + x2 * (0.030381944444444444444444444444 + x2 * (0.022372159090909090909090909091 + x2 * 0.017352764423076923076923076923))))));
         }
     } // anonymous namespace
-
-    const float4  g_SIGN_MASK_F = _mm_castsi128_ps(_mm_set1_epi32(F::SIGN_MASK));
-    const double2 g_SIGN_MASK   = _mm_castsi128_pd(_mm_set1_epi64x(D::SIGN_MASK));
 
     DM_CONSTEXPR_14 inline int Floor(float x)
     {
@@ -98,13 +119,29 @@ namespace DropMath
         return rad;
     }
 
-    DM_CONSTEXPR_14 inline float ToRadians(float deg) { return deg * F::TO_RAD; }
+    DM_CONSTEXPR_14 inline float FoldToHalfPi(float rad)
+    {
+        if (rad > F::HALF_PI)
+            return F::PI - rad;
+        else if (rad < -F::HALF_PI)
+            return -F::PI - rad;
+    }
 
-    DM_CONSTEXPR_14 inline double ToRadians(double deg) { return deg * D::TO_RAD; }
+    DM_CONSTEXPR_14 inline double FoldToHalfPi(double rad)
+    {
+        if (rad > D::HALF_PI)
+            return D::PI - rad;
+        else if (rad < -D::HALF_PI)
+            return -D::PI - rad;
+    }
 
-    DM_CONSTEXPR_14 inline float ToDegrees(float rad) { return rad * F::TO_DEG; }
+    DM_CONSTEXPR inline float ToRadians(float deg) { return deg * F::TO_RAD; }
 
-    DM_CONSTEXPR_14 inline double ToDegrees(double rad) { return rad * D::TO_DEG; }
+    DM_CONSTEXPR inline double ToRadians(double deg) { return deg * D::TO_RAD; }
+
+    DM_CONSTEXPR inline float ToDegrees(float rad) { return rad * F::TO_DEG; }
+
+    DM_CONSTEXPR inline double ToDegrees(double rad) { return rad * D::TO_DEG; }
 
     DM_CONSTEXPR_14 inline float Sin(float rad)
     {
@@ -134,62 +171,120 @@ namespace DropMath
     {
         float sin = Sin(rad);
         float cos = Cos(rad);
-        return IsZero(cos) ? DM_INFINITY : sin / cos;
+        return IsZero(cos) ? F::INFINITY : sin / cos;
     }
 
     inline double Tan(double rad)
     {
         double sin = Sin(rad);
         double cos = Cos(rad);
-        return IsZero(cos) ? DM_INFINITY : sin / cos;
+        return IsZero(cos) ? D::INFINITY : sin / cos;
     }
 
-    DM_CONSTEXPR_14 inline float Sign(float x) { return (x > 0.0f) - (x < 0.0f); }
+    inline float Asin(float x)
+    {
+        // Clamp to domain [-1, 1].
+        x = Clamp(x, -1.0f, 1.0f);
 
-    DM_CONSTEXPR_14 inline double Sign(double x) { return (x > 0.0) - (x < 0.0); }
+        // Sign handling. We don't use 0 sign here because 0 value still can be handled.
+        // That's why we don't use Sign function here since it can return 0.
+        float sign = x < 0.0f ? -1.0f : 1.0f;
+        x          = Abs(x);
 
-    DM_CONSTEXPR_14 inline int Sign(int x) { return (x > 0) - (x < 0); }
+        float result;
+        if (x <= 0.5f)
+        {
+            result = AsinApprox(x);
+        }
+        else
+        {
+            float t = Sqrt((1.0f - x) * 0.5f);
+            result  = F::HALF_PI - 2.0f * AsinApprox(t);
+        }
+
+        return sign * result;
+    }
+
+    inline double Asin(double x)
+    {
+        // Clamp to domain [-1, 1].
+        x = Clamp(x, -1.0, 1.0);
+
+        // Sign handling. We don't use 0 sign here because 0 value still can be handled.
+        // That's why we don't use Sign function here since it can return 0.
+        double sign = x < 0.0 ? -1.0 : 1.0;
+        x           = Abs(x);
+
+        double result;
+        if (x <= 0.5)
+        {
+            result = AsinApprox(x);
+        }
+        else
+        {
+            double t = Sqrt((1.0 - x) * 0.5);
+            result   = D::HALF_PI - 2.0 * AsinApprox(t);
+        }
+
+        return sign * result;
+    }
+
+    DM_CONSTEXPR inline float Sign(float x) { return (x > 0.0f) - (x < 0.0f); }
+
+    DM_CONSTEXPR inline double Sign(double x) { return (x > 0.0) - (x < 0.0); }
+
+    DM_CONSTEXPR inline int Sign(int x) { return (x > 0) - (x < 0); }
+
+    inline float IsEqual(float a, float b) { return IsZero(a - b); }
+
+    inline double IsEqual(double a, double b) { return IsZero(a - b); }
 
     template <typename T>
-    inline T Lerp(const T& a, const T& b, float t)
+    DM_CONSTEXPR inline T Lerp(const T& a, const T& b, float t)
     {
         return a * (1 - t) + b * t;
     }
 
     inline float Abs(float x)
     {
-        float4 data_x = _mm_set_ss(x);
-        float4 abs_x  = _mm_and_ps(g_SIGN_MASK_F, data_x);
-        return _mm_cvtss_f32(abs_x);
+        union
+        {
+            float f;
+            int   i;
+        } u = {x};
+
+        u.i &= F::SIGN_MASK;
+        return u.f;
     }
 
     inline double Abs(double x)
     {
-        double2 data_x = _mm_set_sd(x);
-        double2 abs_x  = _mm_and_pd(g_SIGN_MASK, data_x);
-        return _mm_cvtsd_f64(abs_x);
+        union
+        {
+            double    d;
+            long long i;
+        } u = {x};
+
+        u.i &= D::SIGN_MASK;
+        return u.d;
     }
 
-    DM_CONSTEXPR_14 inline int Abs(int x)
-    {
-        int mask = x >> 31;
-        return (x ^ mask) - mask;
-    }
+    DM_CONSTEXPR inline int Abs(int x) { return (x ^ (x >> 31)) - (x >> 31); }
 
     template <typename T>
-    inline T Min(const T& a, const T& b)
+    DM_CONSTEXPR_14 inline T Min(const T& a, const T& b)
     {
         return (a < b) ? a : b;
     }
 
     template <typename T>
-    inline T Max(const T& a, const T& b)
+    DM_CONSTEXPR_14 inline T Max(const T& a, const T& b)
     {
         return (a > b) ? a : b;
     }
 
     template <typename T>
-    inline T Clamp(const T& value, const T& min, const T& max)
+    DM_CONSTEXPR_14 inline T Clamp(const T& value, const T& min, const T& max)
     {
         return Min(Max(value, min), max);
     }
@@ -217,13 +312,13 @@ namespace DropMath
     }
 
     template <typename Mat>
-    inline float Determinant2x2(const Mat& m)
+    DM_CONSTEXPR inline float Determinant2x2(const Mat& m)
     {
         return m[0][0] * m[1][1] - m[0][1] * m[1][0];
     }
 
     template <typename Mat>
-    inline float Determinant3x3(const Mat& m)
+    DM_CONSTEXPR_14 inline float Determinant3x3(const Mat& m)
     {
         // Alias for faster access.
         float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];
@@ -236,7 +331,7 @@ namespace DropMath
     }
 
     template <typename Mat>
-    inline float Determinant4x4(const Mat& m)
+    DM_CONSTEXPR_14 inline float Determinant4x4(const Mat& m)
     {
         // Alias for faster access.
         float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3];

@@ -1,14 +1,14 @@
 
 namespace DropMath
 {
-    inline Vec4& Mat4x4::operator[](int i)
+    DM_CONSTEXPR_14 inline Vec4& Mat4x4::operator[](int i)
     {
-        assert(i >= 0 && i < 4);
+        DM_ASSERT(i >= 0 && i < 4);
         return rows[i];
     }
-    inline const Vec4& Mat4x4::operator[](int i) const
+    DM_CONSTEXPR_14 inline const Vec4& Mat4x4::operator[](int i) const
     {
-        assert(i >= 0 && i < 4);
+        DM_ASSERT(i >= 0 && i < 4);
         return rows[i];
     }
     inline Vec4 Mat4x4::operator*(const Vec4& v) const
@@ -96,16 +96,18 @@ namespace DropMath
             return StoreColMajor(dst);
             break;
         default:
-            assert(false, "Unknown matrix allignment.");
+            DM_ASSERT(false);
             break;
         }
+
+		return StoreRowMajor(dst);
     }
 
     inline Mat4x4 Mat4x4::Inverse() const
     {
         Mat4x4 out;
         bool   result = TryInverse(*this, out);
-        assert(result);
+        DM_ASSERT(result);
         return out;
     }
 

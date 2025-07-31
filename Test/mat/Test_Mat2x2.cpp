@@ -12,12 +12,12 @@ void TestMat2x2_ConstructAndIdentity()
     Vec2   row0     = identity[0];
     Vec2   row1     = identity[1];
 
-    assert(row0 == Vec2(1.0f, 0.0f));
-    assert(row1 == Vec2(0.0f, 1.0f));
+    DM_ASSERT(row0 == Vec2(1.0f, 0.0f));
+    DM_ASSERT(row1 == Vec2(0.0f, 1.0f));
 
     Mat2x2 m = Mat2x2(row0, row1);
-    assert(m[0] == identity[0]);
-    assert(m[1] == identity[1]);
+    DM_ASSERT(m[0] == identity[0]);
+    DM_ASSERT(m[1] == identity[1]);
 }
 
 // Testing mul operator with Vec2 that returns Vec2.
@@ -26,7 +26,7 @@ void TestMat2x2_MultiplyVec2()
     Mat2x2 identity = Mat2x2::Identity();
     Vec2   v(3.0f, 4.0f);
     Vec2   result = identity * v;
-    assert(result == v);
+    DM_ASSERT(result == v);
 }
 
 // Testing mul operator with Mat2x2 that returns another Mat2x2.
@@ -40,7 +40,7 @@ void TestMat2x2_MultiplyMat2x2()
     Mat2x2 result = m1 * m2;
 
     for (int i = 0; i < 2; ++i)
-        assert(result[i] == m2[i]);
+        DM_ASSERT(result[i] == m2[i]);
 }
 
 // Testing transpose.
@@ -52,13 +52,13 @@ void TestMat2x2_Transpose()
 
     Mat2x2 t = m.Transposed();
 
-    assert(t[0] == Vec2(1.0f, 3.0f));
-    assert(t[1] == Vec2(2.0f, 4.0f));
+    DM_ASSERT(t[0] == Vec2(1.0f, 3.0f));
+    DM_ASSERT(t[1] == Vec2(2.0f, 4.0f));
 
     // Test static version.
     Mat2x2 t2 = Mat2x2::Transpose(t);
-    assert(t2[0] == m[0]);
-    assert(t2[1] == m[1]);
+    DM_ASSERT(t2[0] == m[0]);
+    DM_ASSERT(t2[1] == m[1]);
 }
 
 // Testing store Mat2x2 to float array.
@@ -76,14 +76,14 @@ void TestMat2x2_Store()
 
     // Verify row-major.
     for (int i = 0; i < 4; ++i)
-        assert(rowMajor[i] == (float) (i + 1));
+        DM_ASSERT(rowMajor[i] == (float) (i + 1));
 
     // Verify column-major.
     float expectedColMajor[4] = {
         1.0f, 3.0f,
         2.0f, 4.0f};
     for (int i = 0; i < 4; ++i)
-        assert(colMajor[i] == expectedColMajor[i]);
+        DM_ASSERT(colMajor[i] == expectedColMajor[i]);
 }
 
 // Testing indexing and data layout.
@@ -94,12 +94,12 @@ void TestMat2x2_Indexing()
         Vec2(3.0f, 4.0f));
 
     // Accessing using m[i][j].
-    assert(m[0][0] == 1.0f);
-    assert(m[1][1] == 4.0f);
+    DM_ASSERT(m[0][0] == 1.0f);
+    DM_ASSERT(m[1][1] == 4.0f);
 
     // Writing using operator[].
     m[0][0] = 88.0f;
-    assert(m[0].x == 88.0f);
+    DM_ASSERT(m[0].x == 88.0f);
 }
 
 // Testing pointer access via Data().
@@ -111,12 +111,12 @@ void TestMat2x2_DataPointer()
 
     const float* data = m.Data();
     for (int i = 0; i < 4; ++i)
-        assert(data[i] == (float) (i + 1));
+        DM_ASSERT(data[i] == (float) (i + 1));
 
     // Modify via pointer.
     float* d = m.Data();
     d[0]     = 77.0f;
-    assert(m[0].x == 77.0f);
+    DM_ASSERT(m[0].x == 77.0f);
 }
 
 // Testing individual store methods.
@@ -133,13 +133,13 @@ void TestMat2x2_StoreRowColMajor()
     m.StoreColMajor(col);
 
     for (int i = 0; i < 4; ++i)
-        assert(row[i] == (float) (i + 1));
+        DM_ASSERT(row[i] == (float) (i + 1));
 
     float expectedColMajor[4] = {
         1.0f, 3.0f,
         2.0f, 4.0f};
     for (int i = 0; i < 4; ++i)
-        assert(col[i] == expectedColMajor[i]);
+        DM_ASSERT(col[i] == expectedColMajor[i]);
 }
 
 // NEWER TESTS.
@@ -152,7 +152,7 @@ void TestMat2x2_Determinant()
         Vec2(2.0f, 6.0f));
 
     float det = m.Determinant();
-    assert(IsZero(det - (4.0f * 6.0f - 7.0f * 2.0f)));
+    DM_ASSERT(IsZero(det - (4.0f * 6.0f - 7.0f * 2.0f)));
 }
 
 // Testing Inverse and Matrix * Inverse == Identity.
@@ -166,10 +166,10 @@ void TestMat2x2_Inverse()
     Mat2x2 id  = m * inv;
 
     // Identity matrix check.
-    assert(IsZero(id[0][0] - 1.0f));
-    assert(IsZero(id[0][1] - 0.0f));
-    assert(IsZero(id[1][0] - 0.0f));
-    assert(IsZero(id[1][1] - 1.0f));
+    DM_ASSERT(IsZero(id[0][0] - 1.0f));
+    DM_ASSERT(IsZero(id[0][1] - 0.0f));
+    DM_ASSERT(IsZero(id[1][0] - 0.0f));
+    DM_ASSERT(IsZero(id[1][1] - 1.0f));
 }
 
 // Testing TryInverse with success and failure cases.
@@ -181,13 +181,13 @@ void TestMat2x2_TryInverse()
 
     Mat2x2 out;
     bool   success = Mat2x2::TryInverse(m, out);
-    assert(success);
+    DM_ASSERT(success);
 
     Mat2x2 id = m * out;
-    assert(IsZero(id[0][0] - 1.0f));
-    assert(IsZero(id[0][1] - 0.0f));
-    assert(IsZero(id[1][0] - 0.0f));
-    assert(IsZero(id[1][1] - 1.0f));
+    DM_ASSERT(IsZero(id[0][0] - 1.0f));
+    DM_ASSERT(IsZero(id[0][1] - 0.0f));
+    DM_ASSERT(IsZero(id[1][0] - 0.0f));
+    DM_ASSERT(IsZero(id[1][1] - 1.0f));
 
     // Singular matrix (det = 0), first row is multiple of the second.
     Mat2x2 singular(
@@ -195,7 +195,7 @@ void TestMat2x2_TryInverse()
         Vec2(1.0f, 2.0f));
 
     success = Mat2x2::TryInverse(singular, out);
-    assert(!success);
+    DM_ASSERT(!success);
 }
 
 
